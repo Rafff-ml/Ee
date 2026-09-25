@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1DOWN PICKER — One Click. One Legend.</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E50914',
+                            crimson: '#FF2B2B',
+                            darkRed: '#8C070D',
+                            bg: '#0A0A0C',
+                            card: '#121216',
+                            cardBorder: '#22222A',
+                            surface: '#18181E',
+                            muted: '#8A8A93',
+                            teluguGold: '#F59E0B'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Bebas Neue', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0A0A0C;
+            background-image: 
+                radial-gradient(circle at 50% 25%, rgba(160, 15, 25, 0.12) 0%, rgba(10, 10, 12, 0.98) 60%),
+                radial-gradient(circle at 50% 100%, rgba(25, 25, 35, 0.5) 0%, rgba(10, 10, 12, 1) 80%);
+            background-attachment: fixed;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Vignette Overlay */
+        .vignette-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            box-shadow: inset 0 0 140px rgba(0,0,0,0.85);
+            z-index: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0C;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #252530;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E50914;
+        }
+
+        /* Smooth Transitions */
+        .smooth-fade {
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Hero Display Text */
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.02em;
+            line-height: 0.88;
+            text-shadow: 0 10px 40px rgba(0,0,0,0.9);
+        }
+
+        /* Hunt Button */
+        .btn-hunt {
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-hunt:hover {
+            background-color: #E50914;
+            border-color: #E50914;
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(229, 9, 20, 0.35);
+        }
+        .btn-hunt:active {
+            transform: translateY(0);
+        }
+
+        /* Subtle Shimmer */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                60deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.08) 50%,
+                transparent 70%
+            );
+            transform: rotate(30deg);
+            animation: subtleShimmer 8s infinite linear;
+        }
+        @keyframes subtleShimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            30% { transform: translateX(100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Modal Glass Surface */
+        .glass-panel {
+            background: rgba(18, 18, 22, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Status Dot */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background-color: #E50914;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center relative selection:bg-brand-red selection:text-white px-4 py-6">
+
+    <!-- Ambient Vignette -->
+    <div class="vignette-overlay"></div>
+
+    <!-- Soft Background Radial Glow -->
+    <div class="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-brand-red/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+
+    <!-- HEADER -->
+    <header class="w-full max-w-5xl flex justify-between items-center z-10 relative px-2 py-2 flex-wrap gap-2">
+        <div class="flex items-center gap-2 cursor-pointer group" onclick="showLandingView()">
+            <div class="status-dot transition-transform group-hover:scale-125"></div>
+            <span class="font-display tracking-widest text-lg sm:text-xl text-gray-200 group-hover:text-white transition">1DOWN.AI</span>
+        </div>
+        
+        <div class="flex items-center gap-2 flex-wrap">
+            <!-- Squad Sync Mode Button -->
+            <button onclick="startSquadSync()" class="text-xs font-bold tracking-wider uppercase px-3 py-1.5 rounded-md border transition flex items-center gap-1.5 bg-gradient-to-r from-purple-900/40 to-brand-surface border-purple-500/40 text-purple-300 hover:text-white hover:border-purple-400 shadow-md cursor-pointer">
+                <i class="fa-solid fa-users text-purple-400 text-[11px]"></i>
+                <span>SQUAD SYNC</span>
+            </button>
+
+            <!-- Language Quick Selector -->
+            <button onclick="quickFilterLanguage('telugu')" id="headerTeluguFilterBtn" class="text-xs font-semibold tracking-wider uppercase px-3 py-1.5 rounded-md border transition flex items-center gap-1.5 bg-brand-surface/60 border-brand-cardBorder text-gray-300 hover:text-white hover:border-brand-teluguGold/50 cursor-pointer">
+                <i class="fa-solid fa-clapperboard text-brand-teluguGold text-[11px]"></i>
+                <span>TELUGU CINEMA</span>
+            </button>
+
+            <!-- Vault Archive Button -->
+            <button onclick="toggleArchivesModal()" class="text-xs font-medium tracking-widest uppercase text-gray-400 hover:text-white transition flex items-center gap-2 bg-brand-surface/60 hover:bg-brand-surface px-3 py-1.5 rounded-md border border-brand-cardBorder cursor-pointer">
+                <i class="fa-solid fa-box-archive text-brand-red"></i>
+                <span class="hidden sm:inline">VAULT</span>
+                <span id="headerArchiveCount" class="bg-brand-red/20 text-brand-red px-1.5 py-0.5 rounded text-[11px] font-mono font-bold">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- LANDING VIEW -->
+    <main id="landingView" class="z-10 my-auto flex flex-col items-center text-center max-w-xl w-full py-10 smooth-fade">
+        <div class="mb-6 select-none flex flex-col items-center">
+            <h1 class="hero-title text-7xl sm:text-8xl md:text-9xl font-extrabold text-white tracking-tight uppercase">
+                1DOWN
+            </h1>
+            <h1 class="hero-title text-7xl sm:text-8xl md:text-9xl font-extrabold text-brand-red tracking-tight uppercase -mt-2 sm:-mt-4">
+                PICKER
+            </h1>
+        </div>
+
+        <p class="text-gray-400 text-base sm:text-lg md:text-xl font-light tracking-wide mb-1">
+            Cure your decision paralysis.
+        </p>
+        <p class="text-white text-lg sm:text-xl md:text-2xl font-semibold tracking-wide mb-8">
+            One Click. One Legend.
+        </p>
+
+        <!-- Primary Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
+            <button onclick="startRuleWizard()" class="btn-hunt shimmer w-full sm:w-auto bg-white text-black font-extrabold text-base sm:text-lg px-8 sm:px-10 py-4 uppercase tracking-wider border-2 border-white flex items-center justify-center gap-3 cursor-pointer shadow-xl">
+                <span>START THE HUNT</span>
+                <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+            
+            <button onclick="startSquadSync()" class="w-full sm:w-auto bg-gradient-to-r from-purple-900/60 to-brand-surface hover:from-purple-800 text-purple-200 hover:text-white font-bold text-sm px-6 py-4 uppercase tracking-wider border border-purple-500/40 flex items-center justify-center gap-2 transition cursor-pointer">
+                <i class="fa-solid fa-users text-purple-400"></i>
+                <span>SQUAD MODE</span>
+            </button>
+
+            <button onclick="instantSurpriseLegend()" class="w-full sm:w-auto bg-brand-surface/90 hover:bg-brand-surface text-gray-200 hover:text-white font-bold text-sm px-6 py-4 uppercase tracking-wider border border-brand-cardBorder flex items-center justify-center gap-2 transition cursor-pointer">
+                <i class="fa-solid fa-bolt text-yellow-500"></i>
+                <span>INSTANT</span>
+            </button>
+        </div>
+
+        <!-- Vault & Watched Count -->
+        <div class="flex items-center gap-6 mt-8">
+            <button onclick="toggleArchivesModal()" class="text-xs sm:text-sm text-gray-400 hover:text-white tracking-widest uppercase flex items-center gap-2 transition-colors cursor-pointer group">
+                <i class="fa-solid fa-box-archive text-gray-500 group-hover:text-brand-red transition-colors"></i>
+                <span>VAULT (<span id="archivesCount">0</span>)</span>
+            </button>
+            <span class="text-gray-700">•</span>
+            <div class="text-xs sm:text-sm text-gray-400 tracking-widest uppercase flex items-center gap-2">
+                <i class="fa-solid fa-eye text-emerald-500"></i>
+                <span>SEEN (<span id="watchedCountDisplay">0</span>)</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- WIZARD MODAL -->
+    <div id="wizardModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 sm:p-8 relative border border-brand-cardBorder shadow-2xl transform transition-transform duration-300 scale-95" id="wizardBox">
+            
+            <button onclick="closeRuleWizard()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl p-2 transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs font-mono uppercase tracking-widest text-gray-400 mb-2">
+                    <span id="wizardTitle">RULE SETTINGS</span>
+                    <span>STEP <span id="currentStepNum">1</span> OF 4</span>
+                </div>
+                <div class="w-full bg-brand-surface h-1.5 rounded-full overflow-hidden">
+                    <div id="progressBar" class="bg-brand-red h-full w-1/4 transition-all duration-300 ease-out"></div>
+                </div>
+            </div>
+
+            <!-- STEP 1: Cinema Language -->
+            <div id="wizardStep1" class="step-content">
+                <h2 class="text-xl sm:text-2xl font-bold mb-1">1. Choose Cinema Industry</h2>
+                <p class="text-sm text-gray-400 mb-6">Filter by language or explore global cinema legends.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button onclick="selectRule('lang', 'telugu')" class="rule-btn p-5 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-teluguGold text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-fire text-2xl text-brand-teluguGold group-hover:scale-105 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-base">Telugu Legends</span>
+                            <span class="text-[10px] bg-brand-teluguGold/20 text-brand-teluguGold px-2 py-0.5 rounded font-mono font-bold">TOLLYWOOD</span>
+                        </div>
+                        <span class="text-xs text-gray-400">RRR, Jersey, Sita Ramam, Athadu, Eega & more</span>
+                    </button>
+
+                    <button onclick="selectRule('lang', 'global')" class="rule-btn p-5 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-earth-americas text-2xl text-blue-400 group-hover:scale-105 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-base">Global Legends</span>
+                            <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-mono font-bold">HOLLYWOOD</span>
+                        </div>
+                        <span class="text-xs text-gray-400">Interstellar, Inception, Dark Knight & iconic cinema</span>
+                    </button>
+
+                    <button onclick="selectRule('lang', 'all')" class="rule-btn p-5 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-film text-2xl text-purple-400 group-hover:scale-105 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-base">All Cinema</span>
+                            <span class="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded font-mono font-bold">ANY</span>
+                        </div>
+                        <span class="text-xs text-gray-400">Mix of top rated worldwide and Tollywood masterpieces</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Energy & Vibe -->
+            <div id="wizardStep2" class="step-content hidden">
+                <h2 class="text-xl sm:text-2xl font-bold mb-1">2. What's the Energy Tonight?</h2>
+                <p class="text-sm text-gray-400 mb-6">Select the psychological vibe for your recommendation.</p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <button onclick="selectRule('energy', 'high-adrenaline')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-bolt text-xl text-yellow-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-bold text-sm">High Adrenaline</span>
+                        <span class="text-[11px] text-gray-400">Action, mass hype & thrills</span>
+                    </button>
+
+                    <button onclick="selectRule('energy', 'mind-bending')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-brain text-xl text-purple-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-bold text-sm">Mind-Bending</span>
+                        <span class="text-[11px] text-gray-400">Plot twists & detective mysteries</span>
+                    </button>
+
+                    <button onclick="selectRule('energy', 'tearjerker')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-heart-crack text-xl text-pink-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-bold text-sm">Emotional Impact</span>
+                        <span class="text-[11px] text-gray-400">Heartwarming & deeply moving</span>
+                    </button>
+
+                    <button onclick="selectRule('energy', 'dark-suspense')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-mask text-xl text-red-500 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-bold text-sm">Dark & Gritty</span>
+                        <span class="text-[11px] text-gray-400">Crime, mystery & suspense</span>
+                    </button>
+
+                    <button onclick="selectRule('energy', 'cinematic-art')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-award text-xl text-amber-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-bold text-sm">Cinematic Masterpiece</span>
+                        <span class="text-[11px] text-gray-400">Award-winning cinema</span>
+                    </button>
+
+                    <button onclick="selectRule('energy', 'pure-fun')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 group cursor-pointer">
+                        <i class="fa-solid fa-face-smile-beam text-xl text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                        <span class="font-bold text-sm">Pure Popcorn</span>
+                        <span class="text-[11px] text-gray-400">High rewatchability & comedy</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Era / Time Era Preference -->
+            <div id="wizardStep3" class="step-content hidden">
+                <h2 class="text-xl sm:text-2xl font-bold mb-1">3. Cinema Era Preference</h2>
+                <p class="text-sm text-gray-400 mb-6">Choose modern blockbusters or classic masterpieces.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button onclick="selectRule('era', 'contemporary')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 cursor-pointer">
+                        <i class="fa-solid fa-rocket text-xl text-brand-red"></i>
+                        <span class="font-bold text-sm">Contemporary (2020+)</span>
+                        <span class="text-[11px] text-gray-400">Modern visual spectacles & high fidelity audio</span>
+                    </button>
+                    <button onclick="selectRule('era', 'modern-gold')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 cursor-pointer">
+                        <i class="fa-solid fa-gem text-xl text-amber-400"></i>
+                        <span class="font-bold text-sm">Modern Golden Era (2000-2019)</span>
+                        <span class="text-[11px] text-gray-400">Peak nostalgic hitmakers & legendary rewatchables</span>
+                    </button>
+                    <button onclick="selectRule('era', 'all')" class="rule-btn p-4 rounded-xl bg-brand-surface border border-brand-cardBorder hover:border-brand-red text-left transition flex flex-col gap-2 cursor-pointer">
+                        <i class="fa-solid fa-infinity text-xl text-purple-400"></i>
+                        <span class="font-bold text-sm">Any Era</span>
+                        <span class="text-[11px] text-gray-400">Surprise me across all decades</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Platform & Filters -->
+            <div id="wizardStep4" class="step-content hidden">
+                <h2 class="text-xl sm:text-2xl font-bold mb-1">4. Streaming Platform & Filters</h2>
+                <p class="text-sm text-gray-400 mb-4">Where are you watching & what should we exclude?</p>
+
+                <!-- Platform Selection -->
+                <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-5">
+                    <button onclick="setPlatform('all')" class="platform-chip p-2.5 rounded-lg bg-brand-surface border border-brand-red text-center text-xs font-semibold text-white cursor-pointer">ANY PLATFORM</button>
+                    <button onclick="setPlatform('netflix')" class="platform-chip p-2.5 rounded-lg bg-brand-surface border border-brand-cardBorder text-center text-xs font-semibold text-gray-300 hover:text-white cursor-pointer">NETFLIX</button>
+                    <button onclick="setPlatform('prime')" class="platform-chip p-2.5 rounded-lg bg-brand-surface border border-brand-cardBorder text-center text-xs font-semibold text-gray-300 hover:text-white cursor-pointer">PRIME</button>
+                    <button onclick="setPlatform('hotstar')" class="platform-chip p-2.5 rounded-lg bg-brand-surface border border-brand-cardBorder text-center text-xs font-semibold text-gray-300 hover:text-white cursor-pointer">HOTSTAR</button>
+                    <button onclick="setPlatform('aha')" class="platform-chip p-2.5 rounded-lg bg-brand-surface border border-brand-cardBorder text-center text-xs font-semibold text-gray-300 hover:text-white cursor-pointer">AHA</button>
+                </div>
+
+                <!-- Strict Exclusions -->
+                <div class="mb-5 p-3.5 rounded-xl bg-brand-surface/70 border border-brand-cardBorder">
+                    <label class="block text-xs font-mono uppercase text-brand-red mb-2 font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        <span>NOT IN THE MOOD FOR... (STRICT EXCLUSIONS)</span>
+                    </label>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <label class="flex items-center gap-2 p-2 rounded bg-black/40 cursor-pointer hover:bg-black/60 transition text-gray-300">
+                            <input type="checkbox" id="excludeTearjerkers" class="accent-brand-red">
+                            <span>No Heavy Tearjerkers</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded bg-black/40 cursor-pointer hover:bg-black/60 transition text-gray-300">
+                            <input type="checkbox" id="excludeLong" class="accent-brand-red">
+                            <span>No Movies > 2.5 Hrs</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded bg-black/40 cursor-pointer hover:bg-black/60 transition text-gray-300">
+                            <input type="checkbox" id="excludeOld" class="accent-brand-red">
+                            <span>No Pre-2010 Classics</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded bg-black/40 cursor-pointer hover:bg-black/60 transition text-gray-300">
+                            <input type="checkbox" id="excludeDark" class="accent-brand-red">
+                            <span>No Dark / Crime Themes</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Custom Mood Keyword -->
+                <div class="mb-6">
+                    <label class="block text-xs font-mono uppercase text-gray-400 mb-2">Optional Mood Keyword:</label>
+                    <input type="text" id="customKeywordInput" placeholder="e.g. Mahesh Babu, Nani emotional drama, sci-fi mindbender..." class="w-full bg-brand-surface border border-brand-cardBorder rounded-xl p-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-red transition">
+                </div>
+
+                <button onclick="executeLegendHunt()" class="w-full bg-brand-red hover:bg-red-700 text-white font-extrabold text-base py-4 uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-red/20 cursor-pointer">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <span>UNLOCK MY LEGEND</span>
+                </button>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-brand-cardBorder">
+                <button id="prevStepBtn" onclick="prevStep()" class="text-xs font-mono uppercase text-gray-400 hover:text-white transition invisible cursor-pointer">
+                    ← PREVIOUS
+                </button>
+                <div class="text-[11px] text-gray-500 font-mono">1DOWN ALGORITHM V3.2 • TELUGU ENHANCED</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RESULT VIEW -->
+    <div id="resultView" class="z-20 my-auto flex flex-col items-center max-w-3xl w-full hidden smooth-fade py-6">
+        
+        <div class="mb-4 flex items-center gap-2 bg-brand-surface/90 border border-brand-cardBorder px-4 py-1.5 rounded-full shadow-lg">
+            <span class="status-dot"></span>
+            <span class="text-xs font-mono text-gray-200 uppercase tracking-widest font-bold" id="resultMatchBadge">99% MATCH FOUND</span>
+        </div>
+
+        <div class="glass-panel w-full rounded-2xl overflow-hidden border border-brand-cardBorder shadow-2xl relative">
+            
+            <div class="relative h-72 sm:h-88 w-full overflow-hidden bg-brand-card">
+                <div id="movieBackdrop" class="absolute inset-0 bg-cover bg-center opacity-45 scale-100 transition-all duration-700"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-card via-brand-card/70 to-transparent"></div>
+                
+                <div class="absolute top-4 left-4 flex flex-wrap gap-2" id="resultTags"></div>
+
+                <div class="absolute top-4 right-4 bg-black/80 backdrop-blur border border-yellow-500/40 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                    <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                    <span id="resultImdb" class="font-bold text-xs text-white">8.8</span>
+                    <span class="text-[10px] text-gray-400 font-mono">IMDb</span>
+                </div>
+
+                <div class="absolute bottom-4 left-6 right-6">
+                    <div class="flex items-center gap-2 sm:gap-3 text-xs text-gray-300 mb-1 font-mono flex-wrap">
+                        <span id="resultYear" class="bg-brand-surface/80 px-2 py-0.5 rounded border border-brand-cardBorder">2014</span>
+                        <span>•</span>
+                        <span id="resultRuntime">169 MIN</span>
+                        <span>•</span>
+                        <span id="resultGenre" class="text-brand-red font-semibold">ACTION / DRAMA</span>
+                        <span id="resultLangBadge" class="hidden text-[10px] bg-brand-teluguGold/20 text-brand-teluguGold border border-brand-teluguGold/40 px-2 py-0.5 rounded font-bold">TELUGU</span>
+                    </div>
+                    <h2 id="resultTitle" class="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white leading-tight">
+                        INTERSTELLAR
+                    </h2>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8 bg-brand-card">
+                
+                <!-- Dialogue Player -->
+                <div id="quoteCard" class="mb-6 p-4 rounded-xl bg-gradient-to-r from-brand-surface to-red-950/20 border border-brand-red/30 relative overflow-hidden">
+                    <div class="flex justify-between items-start gap-3">
+                        <div>
+                            <div class="text-[10px] font-mono text-brand-teluguGold uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-quote-left"></i>
+                                <span>ICONIC CINEMATIC DIALOGUE</span>
+                            </div>
+                            <p id="resultQuoteText" class="text-base sm:text-lg font-serif italic text-white font-medium">
+                                "Epudina saahasam chesi charithra srustinchaali, alaanti vallakera rajayogam!"
+                            </p>
+                        </div>
+                        <button onclick="playQuoteAudio()" title="Play Dialogue Audio" class="bg-brand-red/20 hover:bg-brand-red text-brand-red hover:text-white p-3 rounded-full border border-brand-red/50 transition flex items-center justify-center flex-shrink-0 cursor-pointer">
+                            <i class="fa-solid fa-volume-high text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pairing Banner -->
+                <div class="mb-6 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 text-base">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-mono text-amber-400 uppercase font-bold block">RECOMMENDED WATCH PARTY PAIRING</span>
+                        <span id="resultFoodPairing" class="text-xs sm:text-sm text-gray-200 font-medium">🔥 Hot Hyderabadi Biryani + Chilled Thums Up Soda</span>
+                    </div>
+                </div>
+
+                <!-- Pitch -->
+                <div class="mb-6 p-4 rounded-xl bg-brand-surface border border-brand-cardBorder">
+                    <div class="text-xs font-mono text-brand-red uppercase tracking-wider mb-1 font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>WHY THIS IS A LEGEND:</span>
+                    </div>
+                    <p id="resultPitch" class="text-sm sm:text-base text-gray-200 leading-relaxed font-light"></p>
+                </div>
+
+                <!-- Synopsis -->
+                <div class="mb-6">
+                    <h4 class="text-xs font-mono text-gray-400 uppercase tracking-widest mb-2">SYNOPSIS</h4>
+                    <p id="resultSynopsis" class="text-xs sm:text-sm text-gray-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Specs -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 border-t border-b border-brand-cardBorder py-4 text-xs">
+                    <div>
+                        <span class="text-gray-500 font-mono block mb-1">DIRECTOR</span>
+                        <span id="resultDirector" class="font-bold text-gray-200"></span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 font-mono block mb-1">STARRING</span>
+                        <span id="resultCast" class="font-bold text-gray-200"></span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 font-mono block mb-1">WATCH DIRECTLY ON</span>
+                        <div id="resultStreamingLinks" class="flex flex-wrap gap-1.5 mt-1"></div>
+                    </div>
+                </div>
+
+                <!-- Action Toolbar -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button onclick="saveToVault()" id="saveVaultBtn" class="bg-brand-surface hover:bg-brand-surface/80 text-white font-bold text-xs py-3.5 px-3 rounded-xl border border-brand-cardBorder flex items-center justify-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-bookmark text-brand-red" id="vaultIcon"></i>
+                        <span id="vaultBtnText">SAVE TO VAULT</span>
+                    </button>
+
+                    <button onclick="openShareCardModal()" class="bg-purple-900/30 hover:bg-purple-900/50 text-purple-200 font-bold text-xs py-3.5 px-3 rounded-xl border border-purple-500/40 flex items-center justify-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-share-nodes text-purple-400"></i>
+                        <span>SHARE CARD</span>
+                    </button>
+
+                    <button onclick="markAsWatchedAndReroll()" class="bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-300 font-bold text-xs py-3.5 px-3 rounded-xl border border-emerald-500/40 flex items-center justify-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-check-double text-emerald-400"></i>
+                        <span>SEEN IT? REROLL</span>
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-brand-cardBorder/50 text-xs text-gray-400">
+                    <button onclick="rerollWithSpinner()" class="hover:text-white flex items-center gap-2 transition cursor-pointer font-mono uppercase">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>SPIN AGAIN</span>
+                    </button>
+
+                    <button onclick="openTrailerModal()" class="hover:text-white flex items-center gap-2 transition cursor-pointer font-mono uppercase">
+                        <i class="fa-solid fa-circle-play text-brand-red"></i>
+                        <span>WATCH TRAILER</span>
+                    </button>
+
+                    <button onclick="showLandingView()" class="hover:text-white flex items-center gap-2 transition cursor-pointer font-mono uppercase">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>NEW HUNT</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- REEL SPINNER OVERLAY -->
+    <div id="reelSpinnerOverlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="flex flex-col items-center text-center max-w-md w-full">
+            <div class="text-xs font-mono text-brand-red uppercase tracking-[0.3em] font-bold mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-compact-disc animate-spin"></i>
+                <span>1DOWN CINEMATIC ROULETTE</span>
+            </div>
+            
+            <div id="spinnerFrame" class="w-full h-64 bg-brand-card rounded-2xl border-2 border-brand-red relative overflow-hidden shadow-2xl flex flex-col items-center justify-center p-6 my-4">
+                <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-10"></div>
+                
+                <div id="spinnerTrack" class="flex flex-col items-center gap-4">
+                    <i class="fa-solid fa-clapperboard text-5xl text-brand-teluguGold mb-2"></i>
+                    <h3 id="spinnerMovieTitle" class="text-3xl sm:text-4xl font-extrabold uppercase text-white font-display tracking-wider">
+                        SCANNING...
+                    </h3>
+                    <span id="spinnerMovieTag" class="text-xs font-mono text-brand-red uppercase font-bold">CALCULATING VIBES</span>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 font-mono tracking-widest uppercase">LOCKING ONTO YOUR LEGEND...</p>
+        </div>
+    </div>
+
+    <!-- SQUAD SYNC MODAL -->
+    <div id="squadSyncModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 sm:p-8 relative border border-purple-500/30 shadow-2xl">
+            <button onclick="closeSquadSyncModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl p-2 transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-2 text-xs font-mono text-purple-400 uppercase tracking-widest mb-1">
+                <i class="fa-solid fa-users"></i>
+                <span>SQUAD SYNC MODE</span>
+            </div>
+            <h2 class="text-2xl font-bold mb-4" id="squadModalTitle">Setup Your Movie Squad</h2>
+
+            <div id="squadStepSetup">
+                <p class="text-xs text-gray-400 mb-4">Pass the phone around so each squad member votes for their personal vibe.</p>
+                <div class="mb-4">
+                    <label class="block text-xs font-mono uppercase text-gray-300 mb-2">How many friends in the squad?</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setSquadSize(2)" class="squad-size-btn p-3 rounded-xl bg-brand-surface border border-purple-500 text-white font-bold text-sm cursor-pointer">2 Squad Members</button>
+                        <button onclick="setSquadSize(3)" class="squad-size-btn p-3 rounded-xl bg-brand-surface border border-brand-cardBorder text-gray-300 font-bold text-sm cursor-pointer">3 Squad Members</button>
+                        <button onclick="setSquadSize(4)" class="squad-size-btn p-3 rounded-xl bg-brand-surface border border-brand-cardBorder text-gray-300 font-bold text-sm cursor-pointer">4 Squad Members</button>
+                    </div>
+                </div>
+                <button onclick="beginSquadVoting()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-sm py-3.5 uppercase tracking-wider rounded-xl transition cursor-pointer">
+                    START SQUAD POLL
+                </button>
+            </div>
+
+            <div id="squadStepVoting" class="hidden">
+                <div class="p-3 bg-purple-950/40 border border-purple-500/30 rounded-xl mb-4 flex items-center justify-between">
+                    <span class="text-xs font-mono text-purple-300 font-bold" id="squadVoterBadge">SQUAD MEMBER 1 OF 2</span>
+                    <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-mono">PASS THE PHONE</span>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-xs font-mono text-gray-400 uppercase">Select preferred vibe:</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <button onclick="recordSquadVote('high-adrenaline')" class="p-3 rounded-lg bg-brand-surface border border-brand-cardBorder hover:border-purple-400 text-left cursor-pointer">🔥 High Action & Hype</button>
+                        <button onclick="recordSquadVote('mind-bending')" class="p-3 rounded-lg bg-brand-surface border border-brand-cardBorder hover:border-purple-400 text-left cursor-pointer">🧠 Mind Twists & Mystery</button>
+                        <button onclick="recordSquadVote('tearjerker')" class="p-3 rounded-lg bg-brand-surface border border-brand-cardBorder hover:border-purple-400 text-left cursor-pointer">💔 Deep Emotion / Drama</button>
+                        <button onclick="recordSquadVote('pure-fun')" class="p-3 rounded-lg bg-brand-surface border border-brand-cardBorder hover:border-purple-400 text-left cursor-pointer">🍿 Comedy & Fun</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARE CARD MODAL -->
+    <div id="shareCardModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 relative border border-brand-cardBorder shadow-2xl flex flex-col items-center">
+            <button onclick="closeShareCardModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-2 transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-xs font-mono text-brand-red uppercase tracking-widest font-bold mb-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>SHAREABLE MOVIE CARD</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-4">Post To Story / WhatsApp</h3>
+
+            <div class="w-full flex justify-center mb-4 overflow-hidden rounded-xl border border-brand-cardBorder shadow-2xl">
+                <canvas id="shareCardCanvas" width="540" height="720" class="w-full max-w-[270px] h-auto rounded-xl"></canvas>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 w-full text-xs">
+                <button onclick="downloadShareCardImage()" class="bg-brand-red hover:bg-red-700 text-white font-bold p-3 rounded-xl uppercase flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-download"></i>
+                    <span>DOWNLOAD PNG</span>
+                </button>
+                <button onclick="copyFormattedText()" class="bg-brand-surface hover:bg-brand-surface/80 text-white border border-brand-cardBorder font-bold p-3 rounded-xl uppercase flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-copy"></i>
+                    <span id="copyTextBtnLabel">COPY TEXT</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VAULT / ARCHIVES MODAL -->
+    <div id="vaultModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 sm:p-8 relative border border-brand-cardBorder shadow-2xl flex flex-col max-h-[85vh]">
+            <button onclick="toggleArchivesModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl p-2 transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-2 text-xs font-mono text-brand-red uppercase tracking-widest mb-1">
+                <i class="fa-solid fa-box-archive"></i>
+                <span>SAVED MOVIES VAULT</span>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Your Saved Cinema Archive</h2>
+
+            <div id="vaultListContainer" class="flex-1 overflow-y-auto space-y-3 pr-1">
+                <!-- Dynamic Vault Items -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAILER MODAL -->
+    <div id="trailerModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-3xl rounded-2xl overflow-hidden relative border border-brand-cardBorder shadow-2xl flex flex-col">
+            <div class="p-4 flex justify-between items-center border-b border-brand-cardBorder">
+                <span class="text-xs font-mono text-brand-red uppercase font-bold" id="trailerModalTitle">OFFICIAL TRAILER</span>
+                <button onclick="closeTrailerModal()" class="text-gray-400 hover:text-white text-lg transition cursor-pointer px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="relative w-full aspect-video bg-black">
+                <iframe id="trailerIframe" class="w-full h-full" src="" title="Movie Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cinema Legend Master Database
+        const LEGEND_MOVIES = [
+            {
+                id: 'rrr-2022',
+                title: 'RRR',
+                year: 2022,
+                runtime: '187 MIN',
+                genre: 'ACTION / EPIC DRAMA',
+                imdb: '7.8',
+                lang: 'telugu',
+                energy: 'high-adrenaline',
+                era: 'contemporary',
+                platform: 'netflix',
+                director: 'SS Rajamouli',
+                cast: 'NTR Jr., Ram Charan, Alia Bhatt, Ajay Devgn',
+                quote: '“Thokkukuntu Povalae!”',
+                pairing: '🔥 Hot Spicy Biryani + Cold Soda',
+                pitch: 'An exhilarating global phenomenon featuring staggering practical stunts, epic brotherhood, and high-octane action choreography.',
+                synopsis: 'A fearless revolutionary and an officer in the British force forge an unlikely friendship before their secret motives clash in 1920s India.',
+                backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/f_vbAtFSEc0',
+                streamLinks: { netflix: 'https://www.netflix.com/search?q=RRR', hotstar: 'https://www.hotstar.com/in/search?q=RRR' }
+            },
+            {
+                id: 'jersey-2019',
+                title: 'JERSEY',
+                year: 2019,
+                runtime: '157 MIN',
+                genre: 'SPORTS / DRAMA',
+                imdb: '8.5',
+                lang: 'telugu',
+                energy: 'tearjerker',
+                era: 'modern-gold',
+                platform: 'prime',
+                director: 'Gowtam Tinnanuri',
+                cast: 'Nani, Shraddha Srinath, Sathyaraj',
+                quote: '“Eppudaina saahasam chesi charithra srustinchaali!”',
+                pairing: '☕ Hot Filter Coffee + Evening Samosas',
+                pitch: 'An emotionally shattering, deeply inspirational tale of love, fatherhood, and a late-in-life second chance at glory.',
+                synopsis: 'A talented but failed cricketer in his late thirties decides to return to the sport, driven by the desire to represent the Indian cricket team and fulfill his son\'s wish.',
+                backdrop: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/k_6yN0Iu2Ew',
+                streamLinks: { prime: 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=Jersey%20Telugu' }
+            },
+            {
+                id: 'sita-ramam-2022',
+                title: 'SITA RAMAM',
+                year: 2022,
+                runtime: '163 MIN',
+                genre: 'ROMANCE / DRAMA',
+                imdb: '8.6',
+                lang: 'telugu',
+                energy: 'tearjerker',
+                era: 'contemporary',
+                platform: 'prime',
+                director: 'Hanu Raghavapudi',
+                cast: 'Dulquer Salmaan, Mrunal Thakur, Rashmika Mandanna',
+                quote: '“Yuddham tho raasina prema katha...”',
+                pairing: '🍵 Hot Masala Chai + Butter Biscuits',
+                pitch: 'A timeless romantic poetry set against a military backdrop with pristine visuals and unforgettable music.',
+                synopsis: 'An orphaned soldier receiving secret love letters from a woman named Sita sets out to find her, leading to a profound cross-border saga.',
+                backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/L1U3X4QG834',
+                streamLinks: { prime: 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=Sita%20Ramam' }
+            },
+            {
+                id: 'athadu-2005',
+                title: 'ATHADU',
+                year: 2005,
+                runtime: '172 MIN',
+                genre: 'ACTION / DRAMA',
+                imdb: '8.2',
+                lang: 'telugu',
+                energy: 'pure-fun',
+                era: 'modern-gold',
+                platform: 'hotstar',
+                director: 'Trivikram Srinivas',
+                cast: 'Mahesh Babu, Trisha Krishnan, Prakash Raj',
+                quote: '“Nenu enno sarlu cheppaanu, adhi thappu ani...”',
+                pairing: '🍕 Family Pizza Box + Mirchi Bajji',
+                pitch: 'The ultimate cult rewatchable classic packed with razor-sharp dialogue, brilliant family comedy, and sleek action.',
+                synopsis: 'A professional hitman wrongly framed for murder assumes the identity of a deceased man in a quiet village while dodging an astute police investigator.',
+                backdrop: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/S_S4y0mCj3w',
+                streamLinks: { hotstar: 'https://www.hotstar.com/in/search?q=Athadu' }
+            },
+            {
+                id: 'agent-sai-2019',
+                title: 'AGENT SAI SRINIVASA ATHREYA',
+                year: 2019,
+                runtime: '148 MIN',
+                genre: 'MYSTERY / COMEDY',
+                imdb: '8.3',
+                lang: 'telugu',
+                energy: 'mind-bending',
+                era: 'modern-gold',
+                platform: 'prime',
+                director: 'Swaroop RSJ',
+                cast: 'Naveen Polishetty, Shruti Sharma',
+                quote: '“FBI, CIA, and FBI Agent Nellore Branch!”',
+                pairing: '🍿 Cheesy Popcorn + Cold Iced Tea',
+                pitch: 'A brilliant detective comedy-thriller that seamlessly balances hilarious humor with a dark, twist-filled mystery.',
+                synopsis: 'A witty Nellore-based private detective stumbles upon an unidentified body near a railway track, unraveling a massive countrywide conspiracy.',
+                backdrop: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/M24T9pM2F7U',
+                streamLinks: { prime: 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=Agent%20Sai' }
+            },
+            {
+                id: 'eega-2012',
+                title: 'EEGA',
+                year: 2012,
+                runtime: '145 MIN',
+                genre: 'FANTASY / ACTION',
+                imdb: '7.7',
+                lang: 'telugu',
+                energy: 'high-adrenaline',
+                era: 'modern-gold',
+                platform: 'hotstar',
+                director: 'SS Rajamouli',
+                cast: 'Nani, Samantha, Sudeep',
+                quote: '“Ninnu champadaniki eega ga vachaa!”',
+                pairing: '🥤 Loaded Nachos + Energy Drink',
+                pitch: 'Unbelievably inventive filmmaking where a murdered man reincarnates as a housefly to avenge his death.',
+                synopsis: 'Reborn as a housefly, a man seeks to protect the woman he loved from an eccentric, ruthless billionaire who murdered him.',
+                backdrop: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/s2yM1P_4Vag',
+                streamLinks: { hotstar: 'https://www.hotstar.com/in/search?q=Eega' }
+            },
+            {
+                id: 'interstellar-2014',
+                title: 'INTERSTELLAR',
+                year: 2014,
+                runtime: '169 MIN',
+                genre: 'SCI-FI / DRAMA',
+                imdb: '8.7',
+                lang: 'global',
+                energy: 'mind-bending',
+                era: 'modern-gold',
+                platform: 'netflix',
+                director: 'Christopher Nolan',
+                cast: 'Matthew McConaughey, Anne Hathaway',
+                quote: '“Mankind was born on Earth, it was never meant to die here.”',
+                pairing: '☕ Late Night Espresso & Dim Ambient Lights',
+                pitch: 'An awe-inspiring space odyssey exploring love, time dilation, and human survival against impossible cosmological odds.',
+                synopsis: 'When Earth becomes uninhabitable, a former NASA pilot leads a crew through a wormhole in search of a new home for humanity.',
+                backdrop: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/zSWdZVtXT7E',
+                streamLinks: { netflix: 'https://www.netflix.com/search?q=Interstellar' }
+            },
+            {
+                id: 'dark-knight-2008',
+                title: 'THE DARK KNIGHT',
+                year: 2008,
+                runtime: '152 MIN',
+                genre: 'ACTION / CRIME',
+                imdb: '9.0',
+                lang: 'global',
+                energy: 'high-adrenaline',
+                era: 'modern-gold',
+                platform: 'prime',
+                director: 'Christopher Nolan',
+                cast: 'Christian Bale, Heath Ledger',
+                quote: '“Why so serious?”',
+                pairing: '🍔 Loaded Gourmet Burger & Fries',
+                pitch: 'The quintessential superhero crime thriller anchored by Heath Ledger’s legendary performance as the Joker.',
+                synopsis: 'When the Joker wreaks havoc on Gotham, Batman must accept his greatest psychological test to fight injustice.',
+                backdrop: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop',
+                trailerUrl: 'https://www.youtube.com/embed/EXeTwQWrcwY',
+                streamLinks: { prime: 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=The%20Dark%20Knight' }
+            }
+        ];
+
+        // Global State
+        let currentLegend = null;
+        let currentStep = 1;
+        let selectedRules = { lang: 'all', energy: 'all', era: 'all', platform: 'all', custom: '' };
+        let squadSize = 2;
+        let squadCurrentVoter = 1;
+        let squadVotes = [];
+
+        let vaultList = JSON.parse(localStorage.getItem('1down_vault_movies') || '[]');
+        let watchedList = JSON.parse(localStorage.getItem('1down_watched_movies') || '[]');
+
+        // Audio Context Setup
+        let audioCtx = null;
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSoftClick() {
+            initAudioContext();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {}
+        }
+
+        function playReelTickSound() {
+            initAudioContext();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(700 + Math.random() * 250, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.03);
+            } catch (e) {}
+        }
+
+        function playUnlockChime() {
+            initAudioContext();
+            try {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.25);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.08);
+                    osc.stop(audioCtx.currentTime + idx * 0.08 + 0.25);
+                });
+            } catch (e) {}
+        }
+
+        function playQuoteAudio() {
+            if (!currentLegend || !currentLegend.quote) return;
+            try {
+                window.speechSynthesis.cancel();
+                const textToSpeak = currentLegend.quote.replace(/[“”"]/g, '');
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.rate = 0.95;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {}
+        }
+
+        // View Navigation
+        function showLandingView() {
+            playSoftClick();
+            document.getElementById('landingView').classList.remove('hidden');
+            document.getElementById('resultView').classList.add('hidden');
+        }
+
+        function showResultView() {
+            document.getElementById('landingView').classList.add('hidden');
+            document.getElementById('resultView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Wizard Functions
+        function startRuleWizard() {
+            playSoftClick();
+            currentStep = 1;
+            updateWizardStepUI();
+            const modal = document.getElementById('wizardModal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+        }
+
+        function closeRuleWizard() {
+            playSoftClick();
+            const modal = document.getElementById('wizardModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function updateWizardStepUI() {
+            document.getElementById('currentStepNum').innerText = currentStep;
+            document.getElementById('progressBar').style.width = `${(currentStep / 4) * 100}%`;
+            
+            document.getElementById('wizardStep1').classList.toggle('hidden', currentStep !== 1);
+            document.getElementById('wizardStep2').classList.toggle('hidden', currentStep !== 2);
+            document.getElementById('wizardStep3').classList.toggle('hidden', currentStep !== 3);
+            document.getElementById('wizardStep4').classList.toggle('hidden', currentStep !== 4);
+
+            const prevBtn = document.getElementById('prevStepBtn');
+            if (currentStep > 1) {
+                prevBtn.classList.remove('invisible');
+            } else {
+                prevBtn.classList.add('invisible');
+            }
+        }
+
+        function selectRule(key, value) {
+            playSoftClick();
+            selectedRules[key] = value;
+            if (currentStep < 4) {
+                currentStep++;
+                updateWizardStepUI();
+            }
+        }
+
+        function setPlatform(plat) {
+            playSoftClick();
+            selectedRules.platform = plat;
+            document.querySelectorAll('.platform-chip').forEach(btn => {
+                btn.classList.remove('border-brand-red', 'text-white');
+                btn.classList.add('border-brand-cardBorder', 'text-gray-300');
+            });
+            event.currentTarget.classList.remove('border-brand-cardBorder', 'text-gray-300');
+            event.currentTarget.classList.add('border-brand-red', 'text-white');
+        }
+
+        function prevStep() {
+            playSoftClick();
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizardStepUI();
+            }
+        }
+
+        // Algorithm Execution
+        function executeLegendHunt() {
+            closeRuleWizard();
+
+            selectedRules.custom = document.getElementById('customKeywordInput').value.trim();
+            const excludeTearjerkers = document.getElementById('excludeTearjerkers')?.checked;
+            const excludeLong = document.getElementById('excludeLong')?.checked;
+            const excludeOld = document.getElementById('excludeOld')?.checked;
+            const excludeDark = document.getElementById('excludeDark')?.checked;
+
+            let matches = LEGEND_MOVIES.filter(m => {
+                if (excludeTearjerkers && m.energy === 'tearjerker') return false;
+                if (excludeLong && parseInt(m.runtime) > 150) return false;
+                if (excludeOld && m.year < 2010) return false;
+                if (excludeDark && m.energy === 'dark-suspense') return false;
+
+                if (selectedRules.lang !== 'all' && m.lang !== selectedRules.lang) return false;
+                if (selectedRules.energy !== 'all' && selectedRules.energy && m.energy !== selectedRules.energy) return false;
+                if (selectedRules.era !== 'all' && selectedRules.era && m.era !== selectedRules.era) return false;
+
+                return true;
+            });
+
+            if (matches.length === 0) {
+                matches = LEGEND_MOVIES.filter(m => selectedRules.lang === 'all' || m.lang === selectedRules.lang);
+            }
+
+            currentLegend = matches[Math.floor(Math.random() * matches.length)] || LEGEND_MOVIES[0];
+
+            triggerReelSpinner(() => {
+                renderResultView(currentLegend, "100% MATCH UNLOCKED");
+            });
+        }
+
+        function quickFilterLanguage(lang) {
+            playSoftClick();
+            selectedRules.lang = lang;
+            const matches = LEGEND_MOVIES.filter(m => m.lang === lang);
+            currentLegend = matches[Math.floor(Math.random() * matches.length)];
+            triggerReelSpinner(() => {
+                renderResultView(currentLegend, "TELUGU CINEMA LEGEND MATCH");
+            });
+        }
+
+        function instantSurpriseLegend() {
+            playSoftClick();
+            currentLegend = LEGEND_MOVIES[Math.floor(Math.random() * LEGEND_MOVIES.length)];
+            triggerReelSpinner(() => {
+                renderResultView(currentLegend, "100% INSTANT SURPRISE PICK");
+            });
+        }
+
+        // Reel Spinner
+        function triggerReelSpinner(onComplete) {
+            playSoftClick();
+            const overlay = document.getElementById('reelSpinnerOverlay');
+            const titleEl = document.getElementById('spinnerMovieTitle');
+            const tagEl = document.getElementById('spinnerMovieTag');
+            
+            overlay.classList.remove('pointer-events-none', 'opacity-0');
+
+            let counter = 0;
+            const maxTicks = 16;
+            const pool = LEGEND_MOVIES;
+
+            const interval = setInterval(() => {
+                const randomMovie = pool[Math.floor(Math.random() * pool.length)];
+                titleEl.innerText = randomMovie.title;
+                tagEl.innerText = randomMovie.genre;
+                playReelTickSound();
+                counter++;
+
+                if (counter >= maxTicks) {
+                    clearInterval(interval);
+                    playUnlockChime();
+                    setTimeout(() => {
+                        overlay.classList.add('opacity-0', 'pointer-events-none');
+                        if (onComplete) onComplete();
+                    }, 400);
+                }
+            }, 110);
+        }
+
+        function rerollWithSpinner() {
+            triggerReelSpinner(() => rerollLegend());
+        }
+
+        function rerollLegend() {
+            let pool = LEGEND_MOVIES.filter(m => m.id !== (currentLegend ? currentLegend.id : ''));
+            if (selectedRules.lang !== 'all') {
+                const langFiltered = pool.filter(m => m.lang === selectedRules.lang);
+                if (langFiltered.length > 0) pool = langFiltered;
+            }
+            currentLegend = pool[Math.floor(Math.random() * pool.length)] || LEGEND_MOVIES[0];
+            renderResultView(currentLegend, "NEW LEGEND UNLOCKED");
+        }
+
+        // Render Result Screen
+        function renderResultView(movie, matchBadgeText) {
+            showResultView();
+            document.getElementById('resultMatchBadge').innerText = matchBadgeText || "99% MATCH FOUND";
+            document.getElementById('resultTitle').innerText = movie.title;
+            document.getElementById('resultYear').innerText = movie.year;
+            document.getElementById('resultRuntime').innerText = movie.runtime;
+            document.getElementById('resultGenre').innerText = movie.genre;
+            document.getElementById('resultImdb').innerText = movie.imdb;
+            document.getElementById('resultPitch').innerText = movie.pitch;
+            document.getElementById('resultSynopsis').innerText = movie.synopsis;
+            document.getElementById('resultDirector').innerText = movie.director;
+            document.getElementById('resultCast').innerText = movie.cast;
+            document.getElementById('resultQuoteText').innerText = movie.quote ? `“${movie.quote}”` : '"An unforgettable masterwork of cinema."';
+            document.getElementById('resultFoodPairing').innerText = movie.pairing || '🍿 Hot Popcorn + Chilled Beverage';
+            
+            document.getElementById('movieBackdrop').style.backgroundImage = `url('${movie.backdrop}')`;
+
+            const langBadge = document.getElementById('resultLangBadge');
+            if (movie.lang === 'telugu') {
+                langBadge.classList.remove('hidden');
+            } else {
+                langBadge.classList.add('hidden');
+            }
+
+            updateStreamingLinksUI(movie);
+            updateVaultButtonState();
+        }
+
+        function updateStreamingLinksUI(movie) {
+            const container = document.getElementById('resultStreamingLinks');
+            let html = '';
+            if (movie.streamLinks) {
+                if (movie.streamLinks.netflix) html += `<a href="${movie.streamLinks.netflix}" target="_blank" class="bg-red-600/30 border border-red-500/50 text-red-300 px-2 py-1 rounded text-[10px] font-mono font-bold hover:bg-red-600 hover:text-white transition">NETFLIX ↗</a>`;
+                if (movie.streamLinks.prime) html += `<a href="${movie.streamLinks.prime}" target="_blank" class="bg-blue-600/30 border border-blue-500/50 text-blue-300 px-2 py-1 rounded text-[10px] font-mono font-bold hover:bg-blue-600 hover:text-white transition">PRIME ↗</a>`;
+                if (movie.streamLinks.hotstar) html += `<a href="${movie.streamLinks.hotstar}" target="_blank" class="bg-yellow-600/30 border border-yellow-500/50 text-yellow-300 px-2 py-1 rounded text-[10px] font-mono font-bold hover:bg-yellow-600 hover:text-white transition">HOTSTAR ↗</a>`;
+            }
+            if (!html) html = `<span class="text-brand-red font-bold uppercase">${movie.platform || 'MAJOR PLATFORMS'}</span>`;
+            container.innerHTML = html;
+        }
+
+        // Vault / Archives Management
+        function updateVaultCountUI() {
+            const count = vaultList.length;
+            document.getElementById('archivesCount').innerText = count;
+            document.getElementById('headerArchiveCount').innerText = count;
+            renderVaultListUI();
+        }
+
+        function saveToVault() {
+            if (!currentLegend) return;
+            playSoftClick();
+            const index = vaultList.indexOf(currentLegend.id);
+            if (index === -1) {
+                vaultList.push(currentLegend.id);
+            } else {
+                vaultList.splice(index, 1);
+            }
+            localStorage.setItem('1down_vault_movies', JSON.stringify(vaultList));
+            updateVaultCountUI();
+            updateVaultButtonState();
+        }
+
+        function updateVaultButtonState() {
+            if (!currentLegend) return;
+            const saved = vaultList.includes(currentLegend.id);
+            const vaultIcon = document.getElementById('vaultIcon');
+            const vaultText = document.getElementById('vaultBtnText');
+            if (saved) {
+                vaultIcon.className = "fa-solid fa-bookmark text-yellow-400";
+                vaultText.innerText = "SAVED IN VAULT";
+            } else {
+                vaultIcon.className = "fa-solid fa-bookmark text-brand-red";
+                vaultText.innerText = "SAVE TO VAULT";
+            }
+        }
+
+        function toggleArchivesModal() {
+            playSoftClick();
+            const modal = document.getElementById('vaultModal');
+            modal.classList.toggle('opacity-0');
+            modal.classList.toggle('pointer-events-none');
+            renderVaultListUI();
+        }
+
+        function renderVaultListUI() {
+            const container = document.getElementById('vaultListContainer');
+            if (vaultList.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-gray-500 font-mono text-xs">YOUR VAULT IS EMPTY.<br>SAVE LEGENDS FROM THE RESULT SCREEN.</div>`;
+                return;
+            }
+
+            let html = '';
+            vaultList.forEach(id => {
+                const movie = LEGEND_MOVIES.find(m => m.id === id);
+                if (movie) {
+                    html += `
+                        <div class="p-3 rounded-xl bg-brand-surface border border-brand-cardBorder flex justify-between items-center gap-3">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">${movie.title}</h4>
+                                <span class="text-[11px] font-mono text-gray-400">${movie.year} • IMDb ${movie.imdb}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="loadVaultMovie('${movie.id}')" class="px-3 py-1 bg-brand-red hover:bg-red-700 text-white font-bold text-xs rounded-lg uppercase">VIEW</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            container.innerHTML = html;
+        }
+
+        function loadVaultMovie(id) {
+            const movie = LEGEND_MOVIES.find(m => m.id === id);
+            if (movie) {
+                currentLegend = movie;
+                toggleArchivesModal();
+                renderResultView(movie, "SAVED VAULT LEGEND");
+            }
+        }
+
+        function updateWatchedCountUI() {
+            document.getElementById('watchedCountDisplay').innerText = watchedList.length;
+        }
+
+        function markAsWatchedAndReroll() {
+            if (!currentLegend) return;
+            if (!watchedList.includes(currentLegend.id)) {
+                watchedList.push(currentLegend.id);
+                localStorage.setItem('1down_watched_movies', JSON.stringify(watchedList));
+                updateWatchedCountUI();
+            }
+            triggerReelSpinner(() => rerollLegend());
+        }
+
+        // Squad Sync
+        function startSquadSync() {
+            playSoftClick();
+            squadCurrentVoter = 1;
+            squadVotes = [];
+            document.getElementById('squadStepSetup').classList.remove('hidden');
+            document.getElementById('squadStepVoting').classList.add('hidden');
+            const modal = document.getElementById('squadSyncModal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+        }
+
+        function closeSquadSyncModal() {
+            playSoftClick();
+            document.getElementById('squadSyncModal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function setSquadSize(size) {
+            squadSize = size;
+            document.querySelectorAll('.squad-size-btn').forEach(b => {
+                b.classList.remove('border-purple-500', 'text-white');
+                b.classList.add('border-brand-cardBorder', 'text-gray-300');
+            });
+            event.currentTarget.classList.remove('border-brand-cardBorder', 'text-gray-300');
+            event.currentTarget.classList.add('border-purple-500', 'text-white');
+        }
+
+        function beginSquadVoting() {
+            playSoftClick();
+            document.getElementById('squadStepSetup').classList.add('hidden');
+            document.getElementById('squadStepVoting').classList.remove('hidden');
+            document.getElementById('squadVoterBadge').innerText = `SQUAD MEMBER ${squadCurrentVoter} OF ${squadSize}`;
+        }
+
+        function recordSquadVote(energyChoice) {
+            playSoftClick();
+            squadVotes.push(energyChoice);
+
+            if (squadCurrentVoter < squadSize) {
+                squadCurrentVoter++;
+                document.getElementById('squadVoterBadge').innerText = `SQUAD MEMBER ${squadCurrentVoter} OF ${squadSize}`;
+            } else {
+                closeSquadSyncModal();
+                const consensusEnergy = squadVotes[Math.floor(Math.random() * squadVotes.length)];
+                let squadMatches = LEGEND_MOVIES.filter(m => m.energy === consensusEnergy);
+                if (squadMatches.length === 0) squadMatches = LEGEND_MOVIES;
+                currentLegend = squadMatches[Math.floor(Math.random() * squadMatches.length)];
+
+                triggerReelSpinner(() => {
+                    renderResultView(currentLegend, `SQUAD CONSENSUS (${squadSize} VOTES)`);
+                });
+            }
+        }
+
+        // Share Card Modal
+        function openShareCardModal() {
+            if (!currentLegend) return;
+            playSoftClick();
+
+            const canvas = document.getElementById('shareCardCanvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#121216';
+            ctx.fillRect(0, 0, 540, 720);
+
+            ctx.fillStyle = '#E50914';
+            ctx.fillRect(0, 0, 540, 12);
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 26px sans-serif';
+            ctx.fillText('1DOWN PICKER — TONIGHT\'S LEGEND', 30, 60);
+
+            ctx.fillStyle = '#FF2B2B';
+            ctx.font = 'bold 42px sans-serif';
+            ctx.fillText(currentLegend.title.substring(0, 20), 30, 130);
+
+            ctx.fillStyle = '#A0A0B0';
+            ctx.font = '18px monospace';
+            ctx.fillText(`${currentLegend.year} • IMDb ${currentLegend.imdb} • ${currentLegend.runtime}`, 30, 175);
+
+            ctx.fillStyle = '#18181E';
+            ctx.fillRect(30, 210, 480, 140);
+            ctx.strokeStyle = '#333340';
+            ctx.strokeRect(30, 210, 480, 140);
+
+            ctx.fillStyle = '#F59E0B';
+            ctx.font = 'italic 18px serif';
+            ctx.fillText(currentLegend.quote || 'One Click. One Legend.', 50, 270);
+
+            ctx.fillStyle = '#E2E8F0';
+            ctx.font = '18px sans-serif';
+            ctx.fillText(`Pairing: ${currentLegend.pairing || 'Hot Biryani + Cold Drink'}`, 30, 410);
+
+            ctx.fillStyle = '#E50914';
+            ctx.fillRect(30, 620, 480, 60);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('CURATED BY 1DOWN.AI MOVIE ENGINE', 60, 658);
+
+            const modal = document.getElementById('shareCardModal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+        }
+
+        function closeShareCardModal() {
+            playSoftClick();
+            document.getElementById('shareCardModal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function downloadShareCardImage() {
+            const canvas = document.getElementById('shareCardCanvas');
+            const link = document.createElement('a');
+            link.download = `1DOWN-${currentLegend.title.replace(/\s+/g, '-')}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function copyFormattedText() {
+            if (!currentLegend) return;
+            const shareText = `🎬 Tonight's Legend Picked by 1DOWN PICKER:\n\n🍿 *${currentLegend.title}* (${currentLegend.year})\n⭐ IMDb Rating: ${currentLegend.imdb}\n💬 Quote: ${currentLegend.quote || ''}\n🍕 Food Pairing: ${currentLegend.pairing}\n\nDecision paralysis cured by https://1down.ai`;
+            navigator.clipboard.writeText(shareText);
+            document.getElementById('copyTextBtnLabel').innerText = 'COPIED!';
+            setTimeout(() => {
+                document.getElementById('copyTextBtnLabel').innerText = 'COPY TEXT';
+            }, 2000);
+        }
+
+        // Trailer Modal
+        function openTrailerModal() {
+            if (!currentLegend || !currentLegend.trailerUrl) return;
+            playSoftClick();
+            document.getElementById('trailerModalTitle').innerText = `${currentLegend.title} — OFFICIAL TRAILER`;
+            document.getElementById('trailerIframe').src = currentLegend.trailerUrl + '?autoplay=1';
+            const modal = document.getElementById('trailerModal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+        }
+
+        function closeTrailerModal() {
+            playSoftClick();
+            document.getElementById('trailerIframe').src = '';
+            const modal = document.getElementById('trailerModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // On Load Init
+        window.onload = function() {
+            updateVaultCountUI();
+            updateWatchedCountUI();
+        };
+    </script>
+</body>
+</html>
